@@ -1,4 +1,4 @@
- name: MusicHub TR Daily 08:00
+name: MusicHub TR Daily 08:00
 
 on:
   schedule:
@@ -9,27 +9,16 @@ jobs:
   scout-and-editor:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-
-      - name: Python kur
-        uses: actions/setup-python@v6
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
-      - name: Kutuphaneler yukle - FREE
-        run: |
-          pip install requests beautifulsoup4 lxml feedparser
-
-      - name: Agent calistir
-        env:
+      - run: pip install requests beautifulsoup4 lxml feedparser
+      - env:
           EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
           EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
-        run: |
-          python agent_musichub_final_cloud.py
-
-      - name: Dosyalari artifact olarak kaydet
-        uses: actions/upload-artifact@v5
+        run: python agent_musichub_final_cloud.py
+      - uses: actions/upload-artifact@v4
         with:
           name: musichub-rapor-${{ github.run_number }}
           path: |
