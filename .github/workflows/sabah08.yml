@@ -1,0 +1,39 @@
+name: MusicHub TR Daily 08:00
+
+on:
+  schedule:
+    - cron: '0 5 * * *'  # 05:00 UTC = 08:00 Istanbul (GMT+3)
+  workflow_dispatch:  # Manuel calistir butonu
+
+jobs:
+  scout-and-editor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Python kur
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Kutuphaneler yukle - FREE
+        run: |
+          pip install requests beautifulsoup4 lxml feedparser
+
+      - name: Agent calistir
+        env:
+          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+        run: |
+          python agent_musichub_final_cloud.py
+
+      - name: Dosyalari artifact olarak kaydet
+        uses: actions/upload-artifact@v4
+        with:
+          name: musichub-rapor-${{ github.run_number }}
+          path: |
+            ham_haberler.json
+            canli_yayin_metni.txt
+            instagram_caption.txt
+            hukuk_raporu.json
